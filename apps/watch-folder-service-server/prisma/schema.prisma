@@ -1,0 +1,43 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model File {
+  category         Category?      @relation(fields: [categoryId], references: [id])
+  categoryId       String?
+  createdAt        DateTime       @default(now())
+  createdDate      DateTime?
+  dueDate          DateTime?
+  expirationStatus Boolean?
+  filename         String?
+  filePath         String?
+  id               String         @id @default(cuid())
+  isAccepted       Boolean?
+  isDone           Boolean?
+  isReviewed       Boolean?
+  notifications    Notification[]
+  updatedAt        DateTime       @updatedAt
+}
+
+model Notification {
+  createdAt DateTime  @default(now())
+  email     String?
+  file      File?     @relation(fields: [fileId], references: [id])
+  fileId    String?
+  id        String    @id @default(cuid())
+  sentDate  DateTime?
+  updatedAt DateTime  @updatedAt
+}
+
+model Category {
+  createdAt DateTime @default(now())
+  files     File[]
+  id        String   @id @default(cuid())
+  name      String?
+  updatedAt DateTime @updatedAt
+}
